@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Silent Escape</title>
+<link rel="icon" type="icon" href="logo.jpg">
+
+
+<link href="https://fonts.googleapis.com/css2?family=Creepster&family=Special+Elite&display=swap" rel="stylesheet">
+
+<style>
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.background {
+    position: fixed;
+    inset: 0;
+    background: url('bg1.png') no-repeat center center / cover;
+    display: none;
+    z-index: 1;
+    cursor: pointer;
+}
+
+.intro-sign {
+    position: fixed;
+    inset: 0;
+    background: black;
+    z-index: 10;
+    animation: fadeOut 2s forwards;
+    animation-delay: 3s;
+}
+
+@keyframes fadeOut {
+    to { opacity: 0; visibility: hidden; }
+}
+
+.creepy {
+    position: fixed;
+    top: 60%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    text-align: center;
+    color: #fff;
+    font-family: 'Creepster', cursive;
+    font-size: 1.5em;
+    letter-spacing: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    border-right: 2px solid #fff;
+    text-shadow: 0 0 5px #fff, 0 0 10px #000;
+    z-index: 5;
+    display: none;
+}
+
+#doorLock {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.9) url('door-lock.jpg') no-repeat center center / contain;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: 20;
+}
+
+#passwordBox {
+    position: absolute;
+    bottom: 15%;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+}
+
+#passwordBox input {
+    padding: 12px;
+    width: 240px;
+    font-size: 18px;
+    text-align: center;
+    border: none;
+    outline: none;
+    font-family: 'Special Elite', monospace;
+}
+
+#passwordBox button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#error {
+    color: red;
+    margin-top: 8px;
+    display: none;
+}
+</style>
+</head>
+
+<body>
+
+<div id="creepy1" class="creepy"></div>
+<div id="creepy2" class="creepy"></div>
+<div id="creepy3" class="creepy"></div>
+
+<div class="background" id="background"></div>
+<div class="intro-sign" id="intro"></div>
+
+<div id="doorLock">
+    <div id="passwordBox">
+        <form autocomplete="off" onsubmit="return false;">
+            <input 
+                type="text" 
+                id="passwordInput" 
+                name="escape_password" 
+                placeholder="Enter password"
+            >
+            <br>
+            <button type="button" onclick="checkPassword()">Unlock</button>
+            <div id="error">Wrong password. 
+                I have two hands but cannot clap. The short one points at 4. What am I?
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+const intro = document.getElementById("intro");
+const background = document.getElementById("background");
+const doorLock = document.getElementById("doorLock");
+
+let allTextFinished = false;
+
+
+intro.addEventListener("animationend", () => {
+    background.style.display = "block";
+    typeText("creepy1",
+        "You are trapped in a locked room.",
+        () => {
+            typeText("creepy2",
+                "My name's the password for the door.",
+                () => {
+                    typeText("creepy3",
+                        "I have two hands but cannot clap. The short one points at 4. What am I?",
+                        () => {
+                            // Last text disappears after 2 seconds
+                            setTimeout(() => {
+                                allTextFinished = true;
+                                document.getElementById("creepy3").style.display = "none";
+                            }, 2000);
+                        }
+                    );
+                }
+            );
+        }
+    );
+});
+
+
+function typeText(id, text, callback) {
+    const el = document.getElementById(id);
+    el.style.display = "block";
+    el.innerHTML = "";
+    let i = 0;
+
+    function type() {
+        if (i < text.length) {
+            el.innerHTML += text.charAt(i++);
+            setTimeout(type, 60);
+        } else {
+            el.style.borderRight = "none";
+            if (callback) {
+                setTimeout(() => {
+                    el.style.display = "none";
+                    callback();
+                }, 1500);
+            }
+        }
+    }
+    type();
+}
+
+background.addEventListener("click", () => {
+    if (allTextFinished) {
+        doorLock.style.display = "block";
+    }
+});
+
+function checkPassword() {
+    const input = document.getElementById("passwordInput").value.trim().toLowerCase();
+    if (input === "the clock") {
+        window.location.href = "second.html";
+    } else {
+        document.getElementById("error").style.display = "block";
+    }
+}
+</script>
+
+</body>
+</html>

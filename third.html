@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Level 3 – The Silent Wall</title>
+<link rel="icon" type="icon" href="logo.jpg">
+<link href="https://fonts.googleapis.com/css2?family=Creepster&display=swap" rel="stylesheet">
+<style>
+/* ===== EYE OPENING EFFECT ===== */
+#eyeOverlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: black;
+    z-index: 9999;
+    pointer-events: none;
+    animation: eyeOpen 1s forwards;
+}
+
+@keyframes eyeOpen {
+    0% {
+        transform: scaleY(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scaleY(0.1);
+        opacity: 1;
+    }
+    100% {
+        transform: scaleY(0);
+        opacity: 0;
+    }
+}
+
+/* ===== EXISTING STYLES ===== */
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #111;
+    font-family: 'Creepster', cursive;
+    overflow: hidden;
+}
+
+.room {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background: url('bg3.png') center center / cover no-repeat;
+}
+
+.dark-overlay {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0,0,0,1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 50px;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 10px;
+    opacity: 0;
+    transition: opacity 0.1s ease;
+    pointer-events: none;
+}
+
+.lamp-btn {
+    position: absolute;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 15px 30px;
+    font-size: 20px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #ffd700;
+    color: #111;
+    font-weight: bold;
+    z-index: 10;
+}
+
+.input-container {
+    position: absolute;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+}
+
+input {
+    padding: 12px;
+    font-size: 20px;
+    border-radius: 5px;
+    border: 2px solid #444;
+    text-align: center;
+    width: 250px;
+}
+
+.message {
+    margin-top: 10px;
+    color: red;
+    font-size: 18px;
+    height: 24px;
+}
+
+@keyframes shake {
+    0% { transform: translateX(0); }
+    20% { transform: translateX(-10px); }
+    40% { transform: translateX(10px); }
+    60% { transform: translateX(-10px); }
+    80% { transform: translateX(10px); }
+    100% { transform: translateX(0); }
+}
+
+.shake {
+    animation: shake 0.3s;
+}
+</style>
+</head>
+<body>
+
+<!-- ===== EYE OPENING OVERLAY ===== -->
+<div id="eyeOverlay"></div>
+
+<div class="room">
+    <button class="lamp-btn" id="lampBtn">Turn On</button>
+    <div class="dark-overlay" id="overlay">PIXELS</div>
+
+    <div class="input-container" id="inputContainer">
+        <input type="text" id="codeInput" placeholder="Enter code" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+        <div class="message" id="message"></div>
+    </div>
+</div>
+
+<script>
+/* ===== REMOVE EYE OVERLAY AFTER ANIMATION ===== */
+const eyeOverlay = document.getElementById('eyeOverlay');
+eyeOverlay.addEventListener('animationend', () => {
+    eyeOverlay.remove();
+});
+
+/* ===== EXISTING SCRIPT ===== */
+const lampBtn = document.getElementById('lampBtn');
+const overlay = document.getElementById('overlay');
+const inputContainer = document.getElementById('inputContainer');
+const codeInput = document.getElementById('codeInput');
+const message = document.getElementById('message');
+const correctCode = "PIXELS";
+
+lampBtn.addEventListener('click', () => {
+    overlay.style.opacity = 0.4;
+    setTimeout(() => {
+        overlay.style.opacity = 0;
+        inputContainer.style.display = 'flex';
+        codeInput.focus();
+        lampBtn.style.display = 'none';
+    }, 150); 
+});
+
+codeInput.addEventListener('keyup', (e) => {
+    if(e.key === "Enter") {
+        const value = codeInput.value.toUpperCase();
+        if(value === correctCode){
+            message.style.color = 'lime';
+            message.textContent = "Correct! Moving on...";
+            setTimeout(() => {
+                window.location.href = "fourth.html";
+            }, 500);
+        } else {
+            message.style.color = 'red';
+            message.textContent = "Wrong code";
+            codeInput.classList.add('shake');
+
+            overlay.style.opacity = 0.4;
+            setTimeout(() => {
+                overlay.style.opacity = 0;
+            }, 150);
+            setTimeout(() => codeInput.classList.remove('shake'), 300);
+            codeInput.value = '';
+        }
+    }
+});
+</script>
+</body>
+</html>
